@@ -1,0 +1,29 @@
+{% extends "anime_recommend/base.html" %}
+
+{% block content %}
+    {% if not request.user.is_authenticated %}
+    <br>
+    {% else %}
+    <center>
+        <h2>Welcome {{user.username}}!!</h2>
+    </center>
+    {% endif %}
+
+    <div class="row">
+        {% if animes %}
+            {% for anime in animes %}
+            <div class="col-sm-2 col-md-2">
+                <div class="thumbnail" style="border-radius: 22px 22px 22px 22px;">
+                    <center>
+                        <h5>{{anime.title}}</h5>
+                    </center>
+                    <a href="{% url 'index' %}">
+                        <img src="{{ anime.Anime_logo.url}}" class="img-responsive" style="border-radius: 22px 22px 22px 22px;">
+                    </a>
+                    <!-- <h5>{{movie.genre}}</h5> -->
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock content %}

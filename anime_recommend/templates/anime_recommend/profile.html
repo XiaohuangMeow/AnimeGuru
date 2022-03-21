@@ -1,0 +1,35 @@
+{% extends "anime_recommend/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+    <div class="media">
+        <div class="media-body">
+            <h2 class="account-heading">{{ user.username }}</h2>
+            <p class="text-secondary">{{ user.email }}</p>
+        </div>
+    </div>
+    <!-- FORM HERE -->
+    <h2>My List</h2>
+    <hr>
+    <br>
+    <!-- Movie list -->
+    <div class="row">
+        {% if animes %}
+            {% for anime in animes %}
+            <div class="col-sm-2 col-md-2 ">
+                <div class="thumbnail">
+                    <h4>{{anime.title}}</h4>
+                    <a href="#">
+                        <img src="{{ anime.anime_logo.url}}" class="img-responsive">
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-danger">
+                <strong>Sorry!</strong> No animes in your list.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

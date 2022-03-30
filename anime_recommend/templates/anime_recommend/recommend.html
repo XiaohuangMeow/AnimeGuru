@@ -1,0 +1,62 @@
+{% extends "anime_recommend/base.html" %}
+{% block content %}
+    {% if animes %}
+        <div class="container-fluid">
+            <h2>Recommendations for you</h2>
+        </div>
+        <hr>
+        <br>
+    {% endif %}
+
+    <form action="." method="POST">
+        {% csrf_token%}
+
+        <label for="Tags">Tags</label>
+        <div> <input name="Tags" , placeholder="Tags" /></div>
+    
+        <label for="Type">Type</label>
+        <div> <input name="Type" , placeholder="Type" /></div>
+        
+        <label for="Finished">Finished</label>
+        <select name="Finished" id="Finished">
+            <option value="" {% if myrequest.Finished == "" %} selected {%endif%}>All</option>
+            <option value="True" {% if myrequest.Finished == "True" %} selected {%endif%}>True</option>
+            <option value="False" {% if myrequest.Finished == "False" %} selected {%endif%}>False</option>
+        </select>
+
+        <br>
+        <label for="StartYear">StartYear</label>
+        <select name="StartYear" id="StartYear">
+            <option value="2016" {% if myrequest.StartYear == "2016" %} selected {%endif%}>2016</option>
+            <option value="2017" {% if myrequest.StartYear == "2017" %} selected {%endif%}>2017</option>
+            <option value="2018" {% if myrequest.StartYear == "2018" %} selected {%endif%}>2018</option>
+            <option value="2019" {% if myrequest.StartYear == "2019" %} selected {%endif%}>2019</option>
+            <option value="2020" {% if myrequest.StartYear == "2020" %} selected {%endif%}>2020</option>
+            <option value="2021" {% if myrequest.StartYear == "2021" %} selected {%endif%}>2021</option>
+            <option value="2022" {% if myrequest.StartYear == "2022" %} selected {%endif%}>2022</option>
+        </select>
+        
+        <br>
+        <input type="submit" value="Get your recommendation!" />
+    </form>
+
+    <div class="row">
+        {% if animes %}
+            {% for anime in animes %}
+            <div class="col-sm-2 col-md-2">
+                <div class="thumbnail" style="border-radius: 22px 22px 22px 22px;">
+                    <center>
+                        <h6>{{anime.Name}}</h6>
+                    </center>
+                    <a href="{% url 'index' %}">
+                        <img src="{{ anime.picture.url}}" width="200" height="200" class="img-responsive"
+                            style="border-radius: 22px 22px 22px 22px;">
+                    </a>
+                    <!-- <h5>{{movie.genre}}</h5> -->
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+{% endblock content %}

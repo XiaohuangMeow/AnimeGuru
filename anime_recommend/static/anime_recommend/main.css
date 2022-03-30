@@ -82,3 +82,14 @@ a.article-title:hover {
 .account-heading {
   font-size: 2.5rem;
 }
+
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}

@@ -25,7 +25,7 @@ class Anime(models.Model):
     picture = models.FileField()
 
     def __str__(self):
-        return str(self.Anime_PlanetID)
+        return str(self.Name)
 
 
 class Myrating(models.Model):

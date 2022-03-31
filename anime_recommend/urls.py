@@ -9,5 +9,6 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='anime_recommend/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='anime_recommend/logout.html'), name='logout'),
     path('profile/', views.profile, name='profile'),
-    path('recommend/', views.preference_recommend, name='recommend')
+    path('recommend/', views.preference_recommend, name='recommend'),
+    path('<int:anime_id>/', views.detail, name='detail'),
 ]

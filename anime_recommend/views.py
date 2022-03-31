@@ -4,11 +4,7 @@ import pylab as plt
 import numpy as np
 import pandas as pd
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import logout
-from django.shortcuts import render, redirect
-from django.db.models import Q
-from torch import float64, int64
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Anime, Myrating, MyList
 from .forms import UserRegisterForm
 from django.contrib import messages
@@ -176,3 +172,34 @@ def preference_recommend(request):
         Anime_PlanetID__in=animes_selected_idx).order_by(preserved))
 
     return render(request, 'anime_recommend/recommend.html', {'animes': anime_list, 'myrequest': request.POST})
+
+@login_required
+def detail(request, anime_id):
+    anime = Anime.objects.get(id=anime_id)
+    user_animes = list(MyList.objects.all().values().filter(
+        anime_id=anime_id, user=request.user))
+    if user_animes:
+        watched = user_animes[0]['watch']
+    else:
+        watched = False
+
+    if request.method == 'POST':
+        watch_values = request.POST['watch']
+        print(request.POST)
+        if 'Remove' in watch_values:
+            watched = False
+            messages.success(request, "This anime is removed from your list!")
+
+        if 'on' in watch_values:
+            watched = True
+            messages.success(request, "Anime added!")
+
+        if user_animes:
+            MyList.objects.all().values().filter(anime_id=anime_id,user=request.user).update(watch=watched)
+        else:
+            q=MyList(user=request.user,anime=anime,watch=watched)
+            q.save()
+
+    context = {'anime':anime, 'watch':watched}
+    print(context)
+    return render(request, 'anime_recommend/detail.html', context)

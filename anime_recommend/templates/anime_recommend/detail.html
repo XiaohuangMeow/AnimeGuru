@@ -4,27 +4,10 @@
 <div class="container-fluid col-sm-offset-1"></div>
     <div class="col-sm-2 col-md-2">
             <a href="{% url 'index' %}">
-                <img src="{{ anime.picture.url}}" width="200" height="200" class="img-responsive"
+                <img src="{{ anime.picture.url}}" class="img-responsive"
                     style="border-radius: 22px 22px 22px 22px;">
             </a>
             <!-- <h5>{{movie.genre}}</h5> -->
-        </div>
-    </div>
-
-    <div class="col-sm-offset-1 col-sm-4 col-md-4">
-        <h1 style="color:#fff">{{anime.Name}}</h1>
-        <h4><small>Alternative Name: {{anime.Alternative_Name}}</small></h4>
-        <h4><small>Type: {{anime.Type}}</small></h4>
-        <h4><small>Tags: {{anime.Tags}}</small></h4>
-        <h4><small>Episodes: {{anime.Episodes}}</small></h4>
-        <h4><small>Finished: {{anime.Finished}}</small></h4>
-        <h4><small>StartYear: {{anime.StartYear}}</small></h4>
-        <h4><small>EndYear: {{anime.EndYear}}</small></h4>
-        <h4><small>Duration: {{anime.Duration}}</small></h4>
-        <h4><small>Season: {{anime.Season}}</small></h4>
-        <h4><small>Synopsis: {{anime.Synopsis}}</small></h4>
-
-        <div class="col-sm-offset-0 col-sm-8">
             <form class="form-horizontal" role="search" method="post" action="{% url 'detail' anime.id %}">
                 {% csrf_token %}
                 <div class="form-group">
@@ -32,12 +15,12 @@
                         <div class="row">
                             <div class="col-lg-14">
                                 <div class="star-rating">
-                                    <span>Add to my list </span>
-                                    
+                                    <strong><span> Add to my list </span></strong>
+            
                                     {% if watch %}
                                     <input type="checkbox" name="watch" checked>
                                     <input type="submit" class="button" value="Remove" name="watch">
-
+            
                                     {% else %}
                                     <input type="checkbox" name="watch">
                                     <input type="submit" class="button" value="Add">
@@ -49,7 +32,58 @@
                     </div>
                 </div>
             </form>
-        </div>
     </div>
+
+        <h1 style="color:#fff">{{anime.Name}}</h1>
+
+        <h4><small>Alternative Name:</small></h4>
+        <h6>
+            <p><i>{{anime.Alternative_Name}}</i></p>
+        </h6>
+
+        <h4><small>Type:</small></h4>
+        <h6>
+            <p><i>{{anime.Type}}</i></p>
+        </h6>
+
+        <h4><small>Tags:</small></h4>
+        <h6>
+            <p><i>{{anime.Tags}}</i></p>
+        </h6>
+
+        <h4><small>Episodes:</small></h4>
+        <h6>
+            <p><i>{{anime.Episodes}}</i></p>
+        </h6>
+
+        <h4><small>Finished:</small></h4>
+        <h6>
+            <p><i>{{anime.Finished}}</i></p>
+        </h6>
+
+        <h4><small>StartYear:</small></h4>
+        <h6>
+            <p><i>{{anime.StartYear}}</i></p>
+        </h6>
+
+        <h4><small>EndYear:</small></h4>
+        <h6>
+            <p><i>{{anime.EndYear}}</i></p>
+        </h6>
+
+        <h4><small>Duration:</small></h4>
+        <h6>
+            <p><i>{{anime.Duration}}</i></p>
+        </h6>
+
+        <h4><small>Season:</small></h4>
+        <h6>
+            <p><i>{{anime.Season}}</i></p>
+        </h6>
+
+        <h4><small>Synopsis:</small></h4>
+        <h6>
+            <p><i>{{anime.Synopsis}}</i></p>
+        </h6>
 </div>
 {% endblock content %}

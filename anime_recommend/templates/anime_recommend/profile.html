@@ -18,9 +18,9 @@
             {% for anime in animes %}
             <div class="col-sm-2 col-md-2 ">
                 <div class="thumbnail">
-                    <h4>{{anime.Name}}</h4>
+                    <h6>{{anime.Name}}</h6>
                     <a href="{% url 'detail' anime.id %}">
-                        <img src="{{ anime.picture.url}}" class="img-responsive">
+                        <img src="{{ anime.picture.url}}"  width="200" height="200" class="img-responsive" style="border-radius: 22px 22px 22px 22px;">
                     </a>
                 </div>
             </div>

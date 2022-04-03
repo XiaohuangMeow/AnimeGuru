@@ -7,6 +7,7 @@ from sklearn.preprocessing import LabelBinarizer, MultiLabelBinarizer, MinMaxSca
 from sklearn.neighbors import NearestNeighbors
 from scipy.sparse import csr_matrix
 import time
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 def anime_sy_filter(data, myrequest):
     anime_data_selected = data.copy()
@@ -117,7 +118,7 @@ def anime_filter(data, request):
 def recommender(anime_data, preference):
     pd.set_option("max_colwidth", None)
     pd.set_option('mode.chained_assignment', None)
-    feature = ['Tags', 'Type', 'Finished', 'StartYear']
+    feature = ['Tags', 'Type', 'Episodes', 'Duration', 'Finished', 'StartYear']
     anime_metadata = anime_data[feature]
 
     def process_multilabel(series):
@@ -139,23 +140,27 @@ def recommender(anime_data, preference):
         del df[column]
         return pd.concat([df, category_df], axis=1), lb
 
-    def get_recommended(df, preference, n_neighbors):
+    def get_nearest(df, preference, n_neighbors):
 
         model_knn = NearestNeighbors(metric='cosine', n_neighbors=n_neighbors)
         model_knn.fit(csr_matrix(df.astype(np.float64)))
         distances, indices = model_knn.kneighbors(
             preference, n_neighbors=n_neighbors)
-        result = []
-        index_result = []  # 对应数据行的index
+        index = indices.flatten()[0]
+        return index
 
+    def get_recommended(vector, query_index, n_neighbors=10):
+        model_knn = NearestNeighbors(metric='cosine', n_neighbors=n_neighbors)
+        model_knn.fit(vector)
+
+        distances, indices = model_knn.kneighbors(
+            vector[query_index, :].reshape(1, -1), n_neighbors=n_neighbors)
+        result = []
         for i in range(0, len(distances.flatten())):
             index = indices.flatten()[i]
-            index_result.append(index)
             result.append(anime_data.iloc[index])
-            # 需要返回Anime-PlanetID可用：
-            # result.append(anime_data.iloc[index][['Anime-PlanetID']])
 
-        return pd.DataFrame(result), index_result
+        return pd.DataFrame(result)
 
     def process_preference_category(preference, column, lb):
 
@@ -166,26 +171,48 @@ def recommender(anime_data, preference):
         del preference[column]
         return pd.concat([preference, category_preference], axis=1)
 
-    # Animedata preprocessing
+    def get_recommended(vector, query_index, n_neighbors=10):
+        model_knn = NearestNeighbors(metric='cosine', n_neighbors=n_neighbors)
+        model_knn.fit(vector)
 
+        distances, indices = model_knn.kneighbors(
+            vector[query_index, :].reshape(1, -1), n_neighbors=n_neighbors)
+        result = []
+        index_result = []
+        for i in range(0, len(distances.flatten())):
+            index = indices.flatten()[i]
+            result.append(anime_data.iloc[index])
+            index_result.append(index)
+        return pd.DataFrame(result), index_result
+    # Animedata preprocessing
     anime_metadata, lb_type = preprocessing_category(anime_metadata, "Type")
 
     anime_metadata["Tags"] = anime_metadata["Tags"].map(process_multilabel)
     anime_metadata, lb_tags = preprocessing_category(
         anime_metadata, "Tags", True)
 
-    numeric_columns = ["StartYear"]
+    # --------------------add Episodes and Duration------------------------------------
+    numeric_columns = ["StartYear", "Episodes", "Duration"]
     scaler = MinMaxScaler().fit(anime_metadata[numeric_columns])
     anime_metadata[numeric_columns] = scaler.transform(
         anime_metadata[numeric_columns])
-    anime_metadata = anime_metadata.values
 
     #Preference preprocessing
     preference["Tags"] = preference["Tags"].map(process_multilabel)
     preference = process_preference_category(preference, "Type", lb_type)
     preference = process_preference_category(preference, "Tags", lb_tags)
     preference[numeric_columns] = scaler.transform(preference[numeric_columns])
-    preference = preference.values
 
-    # result, index_result = get_recommended(anime_metadata, 0, 11)
-    return get_recommended(anime_metadata, preference, 10)
+    index_result = get_nearest(anime_metadata.values, preference.values, 1)
+
+    tfv = TfidfVectorizer(min_df=3,  max_features=None,
+                          strip_accents='unicode', analyzer='word', token_pattern=r'\w{1,}',
+                          ngram_range=(1, 3),
+                          stop_words='english')
+
+    tfv.fit(anime_data['Synopsis'])
+    df_tf_idf = tfv.transform(anime_data['Synopsis'])
+
+    anime_df = np.concatenate((anime_metadata.values, df_tf_idf.A), 1)
+
+    return get_recommended(anime_df, index_result, n_neighbors=10)

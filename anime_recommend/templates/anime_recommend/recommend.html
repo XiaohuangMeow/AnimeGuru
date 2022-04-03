@@ -18,11 +18,17 @@
         {% csrf_token%}
 
         <label for="Tags">Tags</label>
-        <div> <input name="Tags" , placeholder="Tags" /></div>
+        <div> <input name="Tags" , placeholder="Tags e.g. Action" /></div>
     
         <label for="Type">Type</label>
-        <div> <input name="Type" , placeholder="Type" /></div>
+        <div> <input name="Type" , placeholder="Type, e.g. DVD or Movie" /></div>
         
+        <label for="Episodes">Episodes</label>
+        <div> <input name="Episodes" , placeholder="Episodes, e.g. 10" /></div>
+
+        <label for="Duration">Duration</label>
+        <div> <input name="Duration" , placeholder="Duration, e.g. 5" /></div>
+
         <label for="Finished">Finished</label>
         <select name="Finished" id="Finished">
             <option value="" {% if myrequest.Finished == "" %} selected {%endif%}>All</option>

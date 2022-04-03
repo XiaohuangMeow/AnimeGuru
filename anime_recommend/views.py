@@ -158,7 +158,9 @@ def preference_recommend(request):
     
     myrequest['Type'] = request.POST.get('Type', None)
     myrequest['Tags'] = request.POST.get('Tags', None)
-
+    myrequest['Episodes'] = request.POST.get('Episodes', None)
+    myrequest['Duration'] = request.POST.get('Duration', None)
+    
     page = request.POST.get('page', 1)
     preference = pd.DataFrame(myrequest, index=[0])
 
